@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Template Studio — Theory Solutions</title>
+<title>MOATSStudio — boho-wedding-patina — Theory Solutions</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Raleway:wght@300;400;600;700&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -122,19 +122,48 @@
 </style>
 
 <style>
-  /* MOATSStudio isolated template - hide navigation */
-  .template-gallery, .gallery, #gallery, .sidebar-gallery,
-  .template-picker, #template-picker, .template-list,
-  [class*="gallery"], [class*="template-list"],
-  .top-bar .shop-name, .nav-brand, .header-brand {
-    display: none !important;
+  /* Hide template gallery, sidebar, header branding */
+  .template-gallery, .sidebar, .template-picker, .template-grid,
+  .cat-bar, .cat-pills, .search-bar, #template-picker,
+  [class*="gallery"], [class*="sidebar"], [class*="picker"],
+  .hero, .hero-section, .app-header, .brand-header { 
+    display: none !important; 
   }
-  /* Expand canvas area to full width */
-  .main-area, .editor-area, .canvas-container-wrap {
+  /* Make editor take full width */
+  .editor-wrap, .editor-panel, .canvas-wrap, main, .app-main {
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 auto !important;
   }
 </style>
+
+<script>
+// Auto-load the specific template after page loads
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for canvas and templates to be ready
+  function tryLoad() {
+    // Try to find and click the template thumbnail
+    var thumbs = document.querySelectorAll('[data-id="boho-wedding-patina"], [data-template="boho-wedding-patina"]');
+    if (thumbs.length > 0) {
+      thumbs[0].click();
+      return;
+    }
+    // Try calling loadTemplate directly if it exists
+    if (typeof loadTemplate === 'function') {
+      var tmpl = typeof TEMPLATES !== 'undefined' ? TEMPLATES.find(t => t.id === 'boho-wedding-patina') : null;
+      if (tmpl) { loadTemplate(tmpl); return; }
+    }
+    // Also try window.loadTemplate
+    if (typeof window.loadTemplate === 'function') {
+      var tmpl2 = typeof TEMPLATES !== 'undefined' ? TEMPLATES.find(t => t.id === 'boho-wedding-patina') : null;
+      if (tmpl2) { window.loadTemplate(tmpl2); return; }
+    }
+    // Retry
+    setTimeout(tryLoad, 500);
+  }
+  setTimeout(tryLoad, 1000);
+});
+</script>
 </head>
 <body>
 
@@ -1968,36 +1997,6 @@ if(directTemplate) {
 }
 
 window.addEventListener('resize',()=>{ if(canvas) fitCanvas(); });
-</script>
-
-<script>
-// MOATSStudio: Auto-load isolated template
-window.__ISOLATED_TEMPLATE_ID__ = 'boho-wedding-patina';
-document.addEventListener('DOMContentLoaded', function() {
-  // Wait for canvas and templates to initialize
-  var attempts = 0;
-  var interval = setInterval(function() {
-    attempts++;
-    // Try to find and click the template thumbnail
-    var thumbs = document.querySelectorAll('[data-id="boho-wedding-patina"], .template-thumb[data-template="boho-wedding-patina"], .tmpl-card');
-    if (thumbs.length > 0) {
-      thumbs[0].click();
-      clearInterval(interval);
-      return;
-    }
-    // Alternative: call loadTemplate directly if function exists
-    if (typeof loadTemplate === 'function') {
-      var tmpl = TEMPLATES ? TEMPLATES.find(function(t){return t.id==='boho-wedding-patina';}) : null;
-      if (tmpl) { loadTemplate(tmpl); clearInterval(interval); return; }
-    }
-    if (typeof selectTemplate === 'function') {
-      selectTemplate('boho-wedding-patina');
-      clearInterval(interval);
-      return;
-    }
-    if (attempts > 30) clearInterval(interval);
-  }, 200);
-});
 </script>
 </body>
 </html>

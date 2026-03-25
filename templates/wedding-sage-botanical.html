@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MOATSStudio — wedding-sage-botanical — Theory Solutions</title>
+<title>MOATSStudio — Edit Your Template</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Raleway:wght@300;400;600;700&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -122,54 +122,27 @@
 </style>
 
 <style>
-  /* Hide template gallery, sidebar, header branding */
-  .template-gallery, .sidebar, .template-picker, .template-grid,
-  .cat-bar, .cat-pills, .search-bar, #template-picker,
-  [class*="gallery"], [class*="sidebar"], [class*="picker"],
-  .hero, .hero-section, .app-header, .brand-header { 
-    display: none !important; 
-  }
-  /* Make editor take full width */
-  .editor-wrap, .editor-panel, .canvas-wrap, main, .app-main {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-  }
+/* ===== MOATSSTUDIO ISOLATED MODE — HIDE EVERYTHING EXCEPT EDITOR ===== */
+/* Hide topbar/nav */
+.topbar, .topbar-logo, .topbar-actions { display: none !important; }
+/* Hide gallery view entirely */
+#gallery-view, .gallery-header, .cat-bar, .search-bar { display: none !important; }
+/* Hide sidebar panels */
+.sidebar, .left-panel, .right-panel, .layers-panel, #layers-panel { display: none !important; }
+/* Show editor view immediately */
+#editor-view { display: flex !important; }
+/* Make canvas area take full width */
+.canvas-area, #canvas-area { flex: 1 !important; width: 100% !important; }
+/* Remove any padding/margins from toolbar that assume nav */
+body { padding-top: 0 !important; }
+/* Keep toolbar visible for download button */
 </style>
-
-<script>
-// Auto-load the specific template after page loads
-document.addEventListener('DOMContentLoaded', function() {
-  // Wait for canvas and templates to be ready
-  function tryLoad() {
-    // Try to find and click the template thumbnail
-    var thumbs = document.querySelectorAll('[data-id="wedding-sage-botanical"], [data-template="wedding-sage-botanical"]');
-    if (thumbs.length > 0) {
-      thumbs[0].click();
-      return;
-    }
-    // Try calling loadTemplate directly if it exists
-    if (typeof loadTemplate === 'function') {
-      var tmpl = typeof TEMPLATES !== 'undefined' ? TEMPLATES.find(t => t.id === 'wedding-sage-botanical') : null;
-      if (tmpl) { loadTemplate(tmpl); return; }
-    }
-    // Also try window.loadTemplate
-    if (typeof window.loadTemplate === 'function') {
-      var tmpl2 = typeof TEMPLATES !== 'undefined' ? TEMPLATES.find(t => t.id === 'wedding-sage-botanical') : null;
-      if (tmpl2) { window.loadTemplate(tmpl2); return; }
-    }
-    // Retry
-    setTimeout(tryLoad, 500);
-  }
-  setTimeout(tryLoad, 1000);
-});
-</script>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-logo">🎨 <span>Template</span>Studio</div>
+  <div class="topbar-logo"></div>
   <div class="topbar-actions">
     <button class="btn btn-ghost" onclick="showGallery()" id="btn-gallery">← Gallery</button>
     <button class="btn btn-ghost" id="btn-undo" onclick="undo()" style="display:none">↩ Undo</button>
@@ -1997,6 +1970,34 @@ if(directTemplate) {
 }
 
 window.addEventListener('resize',()=>{ if(canvas) fitCanvas(); });
+</script>
+
+<script>
+// MOATSSTUDIO ISOLATED MODE — auto-load single template on startup
+(function() {
+  var TARGET_ID = 'wedding-sage-botanical';
+  
+  function tryLoad() {
+    if (typeof loadTemplate === 'function' && typeof TEMPLATES !== 'undefined') {
+      var tmpl = TEMPLATES.find(function(t) { return t.id === TARGET_ID; });
+      if (tmpl) {
+        // Show editor view, hide gallery
+        var gv = document.getElementById('gallery-view');
+        var ev = document.getElementById('editor-view');
+        if (gv) gv.style.display = 'none';
+        if (ev) ev.style.display = 'flex';
+        loadTemplate(TARGET_ID);
+        return;
+      }
+    }
+    setTimeout(tryLoad, 300);
+  }
+  
+  // Override initApp to skip gallery and go straight to template
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(tryLoad, 500);
+  });
+})();
 </script>
 </body>
 </html>
